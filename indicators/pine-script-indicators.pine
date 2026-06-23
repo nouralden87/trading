@@ -1,0 +1,39 @@
+//@version=5
+// مؤشرات Pine Script — TradingView
+
+// --- RSI ---
+indicator("RSI Strategy", overlay=false)
+rsi = ta.rsi(close, 14)
+hline(70, "Overbought", color=color.red)
+hline(30, "Oversold", color=color.green)
+plot(rsi, "RSI", color=color.purple)
+
+// --- EMA Crossover ---
+indicator("EMA Crossover", overlay=true)
+ema9 = ta.ema(close, 9)
+ema21 = ta.ema(close, 21)
+plot(ema9, "EMA 9", color=color.blue)
+plot(ema21, "EMA 21", color=color.orange)
+buy = ta.crossover(ema9, ema21)
+sell = ta.crossunder(ema9, ema21)
+plotshape(buy, style=shape.triangleup, location=location.belowbar, color=color.green, size=size.small)
+plotshape(sell, style=shape.triangledown, location=location.abovebar, color=color.red, size=size.small)
+
+// --- Bollinger Bands ---
+indicator("Bollinger Bands", overlay=true)
+basis = ta.sma(close, 20)
+dev = ta.stdev(close, 20)
+upper = basis + 2 * dev
+lower = basis - 2 * dev
+plot(basis, "Basis", color=color.yellow)
+p1 = plot(upper, "Upper", color=color.red)
+p2 = plot(lower, "Lower", color=color.green)
+fill(p1, p2, color=color.new(color.gray, 90))
+
+// --- MACD ---
+indicator("MACD", overlay=false)
+[macd, signal, hist] = ta.macd(close, 12, 26, 9)
+plot(macd, "MACD", color=color.blue)
+plot(signal, "Signal", color=color.orange)
+plot(hist, "Histogram", style=plot.style_histogram, color=hist >= 0 ? color.green : color.red)
+hline(0, "Zero", color=color.gray)
